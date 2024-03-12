@@ -3,9 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/23.11";
+    typst-flake.url = "github:typst/typst?ref=v0.11.0-rc1";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, typst-flake }:
     let
       #system = "x86_64-linux";
       system = "aarch64-darwin";
@@ -16,7 +17,7 @@
       devShells.${system} = {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            typst
+            typst-flake.packages.${system}.default
           ];
         };
       };
