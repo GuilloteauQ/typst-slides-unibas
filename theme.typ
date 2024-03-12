@@ -18,16 +18,25 @@
   body
 }
 
-#let title-slide(title: [], author: []) = {
+#let title-slide(title: [], authors: ()) = {
+  let array_affiliations = authors.map(d => d.affiliation).dedup()
+  let affiliations_str = array_affiliations.enumerate().map(x => {
+     let (i, a) = x
+     super(str(i + 1)) + a
+  }).join("\n")
+  let authors_str = authors.map(d => {
+     let affiliation_index = array_affiliations.position(a => a == d.affiliation)
+     if d.is_presenter { underline(d.name) } else { d.name } + super(str(affiliation_index + 1))
+  }).join(", ", last: " and ")
   let content = {
     stack(
         block(width: 100%, height: 20%, fill: unibas-mint, place(horizon+left, dx: 2.5%, image("logo.svg", width: 20%))),
-        //block(width: 100%, height: 20%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 1.2em, title)),
         block(width: 100%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 1.2em, title)),
         line(start: (2.5%, 0%), length: 95%, stroke: (paint: unibas-mint, thickness: 2pt, dash: "loosely-dashed")),
 
-        block(width: 100%, height: 10%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 0.7em, author)),
-        block(width: 100%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 0.7em, "University of Basel, Switzerland")),
+        block(width: 100%, height: 10%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 0.7em, authors_str)),
+        parbreak(),
+        block(width: 100%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 0.7em, affiliations_str)),
     )
   }
   polylux-slide(content)
@@ -68,8 +77,8 @@
   let header = {
     set align(top)
     if title != none {
-        block(width: 100%, height: 97.5%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 1.2em, title) )
-     line(start: (2.5%, 0%), length: 95%, stroke: (paint: unibas-mint, thickness: 2pt, dash: "loosely-dashed"))
+        block(width: 100%, inset: 0.8em, above: 0pt, below: 0pt, breakable: false, text(fill: black, size: 1.2em, title))
+        line(start: (2.5%, 0%), length: 95%, stroke: (paint: unibas-mint, thickness: 2pt, dash: "loosely-dashed"))
     } else { [] }
   }
 
